@@ -18,5 +18,9 @@
 go.work
 go.work.sum
 
+#ignore db files
+/storage
+/config
+
 # env file
 .env
