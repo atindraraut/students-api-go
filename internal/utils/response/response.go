@@ -30,3 +30,9 @@ func GeneralError(err error) Response{
 		Error:  err.Error(),
 	}
 }
+func ValidationError(err error) Response{
+	return Response{
+		Status: StatusBadRequest,
+		Error:  err.Error(),
+	}
+}

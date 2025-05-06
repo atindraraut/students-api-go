@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
-	"log/slog"
 	"net/http"
 	"github.com/atindraraut/crudgo/internal/types"
 	"github.com/atindraraut/crudgo/internal/utils/response"
@@ -26,10 +25,9 @@ func New() http.HandlerFunc {
 		}
 		//request validation
 		if err := validator.New().Struct(&student); err != nil {
-			response.WriteJSON(w, http.StatusBadRequest, response.GeneralError(err))
+			response.WriteJSON(w, http.StatusBadRequest, response.ValidationError(errors.New("validation error")))
 			return
 		}
-		slog.Info("Creating a student.",slog.String("method", r.Method), "Body:",slog.AnyValue(student))
 		responseData := map[string]interface{}{
 			"Message": "Student created successfully",
 			"Student": student,

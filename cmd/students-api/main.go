@@ -13,6 +13,15 @@ import (
 	"github.com/atindraraut/crudgo/internal/http/handlers/student"
 )
 
+func timeTracker(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		start := time.Now()
+		next.ServeHTTP(w, r)
+		duration := time.Since(start)
+		slog.Info("Request duration", slog.String("method", r.Method), slog.String("path", r.URL.Path), slog.Duration("duration", duration))
+	})
+}
+
 func main() {
 	//load config
 	cfg := config.MustLoadConfig()
@@ -20,12 +29,12 @@ func main() {
 
 	//setup routes
 	router := http.NewServeMux()
-
+	handleTimeTracker := timeTracker(router)
 	router.HandleFunc("POST /api/students", student.New())
 	//setup server
 	server := &http.Server{
 		Addr:    cfg.HTTPServer.ADDR,
-		Handler: router,
+		Handler: handleTimeTracker,
 	}
 	slog.Info("Starting server...", slog.String("address", cfg.HTTPServer.ADDR))
 	done:= make(chan os.Signal, 1)
