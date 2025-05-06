@@ -19,7 +19,7 @@ go.work
 go.work.sum
 
 #ignore db files
-/storage
+storage.db
 /config
 
 # env file
