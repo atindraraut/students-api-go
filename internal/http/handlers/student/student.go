@@ -25,7 +25,8 @@ func New() http.HandlerFunc {
 		}
 		//request validation
 		if err := validator.New().Struct(&student); err != nil {
-			response.WriteJSON(w, http.StatusBadRequest, response.ValidationError(errors.New("validation error")))
+			validatorErrors := err.(validator.ValidationErrors)
+			response.WriteJSON(w, http.StatusBadRequest, response.ValidationError(validatorErrors))
 			return
 		}
 		responseData := map[string]interface{}{
