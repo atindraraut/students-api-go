@@ -27,7 +27,7 @@ func main() {
 	//load config
 	cfg := config.MustLoadConfig()
 	//database setup
-	_, err := sqlite.New(cfg)
+	storage , err := sqlite.New(cfg)
 	if err != nil {
 		log.Fatalf("failed to connect to database: %s", err.Error())
 	}
@@ -35,7 +35,7 @@ func main() {
 	//setup routes
 	router := http.NewServeMux()
 	handleTimeTracker := timeTracker(router)
-	router.HandleFunc("POST /api/students", student.New())
+	router.HandleFunc("POST /api/students", student.New(storage))
 	//setup server
 	server := &http.Server{
 		Addr:    cfg.HTTPServer.ADDR,

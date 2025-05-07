@@ -5,12 +5,14 @@ import (
 	"errors"
 	"io"
 	"net/http"
+
 	"github.com/atindraraut/crudgo/internal/types"
 	"github.com/atindraraut/crudgo/internal/utils/response"
+	"github.com/atindraraut/crudgo/storage"
 	"github.com/go-playground/validator/v10"
 )
 
-func New() http.HandlerFunc {
+func New(storage storage.Storage) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		var student types.Student
@@ -29,9 +31,14 @@ func New() http.HandlerFunc {
 			response.WriteJSON(w, http.StatusBadRequest, response.ValidationError(validatorErrors))
 			return
 		}
+		id,err:=storage.CreateStudent(student.Name, student.Age, student.Email)
+		if err != nil {
+			response.WriteJSON(w, http.StatusInternalServerError, response.GeneralError(err))
+			return
+		}
 		responseData := map[string]interface{}{
 			"Message": "Student created successfully",
-			"Student": student,
+			"id": id,
 		}
 		response.WriteJSON(w, http.StatusCreated, responseData)
 	}
