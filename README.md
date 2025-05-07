@@ -96,8 +96,6 @@ Contributions are welcome! Please follow these steps:
 3. Commit your changes and push the branch.
 4. Open a pull request.
 
-## License
-This project is licensed under the MIT License. See the `LICENSE` file for details.
 
 ## Contact
-For any questions or feedback, please contact [your-email@example.com].
+For any questions or feedback, please contact [atindraraut80@gmail.com].
