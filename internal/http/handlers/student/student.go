@@ -5,7 +5,7 @@ import (
 	"errors"
 	"io"
 	"net/http"
-
+	"strconv"
 	"github.com/atindraraut/crudgo/internal/types"
 	"github.com/atindraraut/crudgo/internal/utils/response"
 	"github.com/atindraraut/crudgo/storage"
@@ -41,5 +41,22 @@ func New(storage storage.Storage) http.HandlerFunc {
 			"id": id,
 		}
 		response.WriteJSON(w, http.StatusCreated, responseData)
+	}
+}
+
+func GetById(storage storage.Storage) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		id := r.PathValue("id")
+		if id == "" {
+			response.WriteJSON(w, http.StatusBadRequest, response.GeneralError(errors.New("id is required")))
+			return
+		}
+		idInt, _ := strconv.ParseInt(id, 10, 64)
+		student , err := storage.GetStudentById(idInt)
+		if err != nil {
+			response.WriteJSON(w, http.StatusInternalServerError, response.GeneralError(err))
+			return
+		}
+		response.WriteJSON(w, http.StatusOK, student)
 	}
 }

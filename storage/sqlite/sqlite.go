@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/atindraraut/crudgo/internal/config"
+	"github.com/atindraraut/crudgo/internal/types"
 )
 
 
@@ -45,4 +46,18 @@ func (s *Sqlite) CreateStudent(name string, age int, email string) (int64, error
 		return 0, err
 	}
 	return id, nil
+}
+
+func (s *Sqlite) GetStudentById(id int64) (types.Student, error) {
+	var student types.Student
+	stmt, err := s.Db.Prepare("SELECT id, name, age, email FROM students WHERE id = ?")
+	if err != nil {
+		return student, err
+	}
+	defer stmt.Close()
+	err = stmt.QueryRow(id).Scan(&student.Id, &student.Name, &student.Age, &student.Email)
+	if err != nil {
+		return student, err
+	}
+	return student, nil
 }
